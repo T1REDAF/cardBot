@@ -17,13 +17,14 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import static com.t1redaf.cardBot.configuration.CommandName.*;
-import static org.telegram.abilitybots.api.objects.Flag.PHOTO;
-import static org.telegram.abilitybots.api.objects.Flag.TEXT;
+import static org.telegram.abilitybots.api.objects.Flag.*;
 import static org.telegram.abilitybots.api.objects.Locality.ALL;
 import static org.telegram.abilitybots.api.objects.Locality.USER;
+import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
 
 @Component
 public class CardBot extends AbilityBot {
@@ -42,7 +43,7 @@ public class CardBot extends AbilityBot {
                 .info("User registration handling")
                 .input(0)
                 .locality(ALL)
-                .privacy(Privacy.PUBLIC)
+                .privacy(PUBLIC)
                 .action(context -> telegramUserService.findByChatId(context.chatId()).ifPresentOrElse(telegramUser -> {
                     silent.send("Hi, dear %s\n\nI am very glad to see you again".formatted(context.user().getUserName()), context.chatId());
                 }, () -> {
@@ -79,7 +80,7 @@ public class CardBot extends AbilityBot {
                 .info("information about bot commands")
                 .input(0)
                 .locality(USER)
-                .privacy(Privacy.PUBLIC)
+                .privacy(PUBLIC)
                 .action(ctx -> silent.send("""
                         ✨Available commands✨
 
@@ -115,10 +116,11 @@ public class CardBot extends AbilityBot {
                         e.printStackTrace();
                     }
                 }
-            , PHOTO,Flag.CAPTION);
+            , PHOTO, CAPTION);
         return ReplyFlow.builder(db)
                 .action((bot,update) ->
-                        silent.send("Please attach a photo of card and his name in one message(necessarily)", update.getMessage().getChatId()))
+                        silent.send("Please attach a photo of card and his name in one message(necessarily)",
+                                update.getMessage().getChatId()))
                 .onlyIf(hasText(ADD.getCommandName()))
                 .next(addCardReply)
                 .build();
@@ -131,14 +133,33 @@ public class CardBot extends AbilityBot {
     public Ability getListOfCards(){
         return  Ability
                 .builder()
-                .name("getAllCards")
+                .name("cards")
                 .info("Get all of cards")
                 .input(0)
-                .locality(USER)
-                .privacy(Privacy.PUBLIC)
+                .locality(ALL)
+                .privacy(PUBLIC)
                 .action(context -> {
+                    List<Card> cards = cardService.getCardsByChatId(context.chatId());
+                    if (cards.isEmpty()) {
+                        silent.send("""
+                                You dont have any cards.
+                                Please add photo of card via command %s"""
+                                .formatted(ADD.getCommandName()),context.chatId());
+                        return;
+                    }
 
-                    //TODO MAKE METHOD
+                    SendMessage msg = new SendMessage(context.chatId().toString(), """
+                            1
+                            Choose your card
+                            1
+                            """);
+                    msg.setReplyMarkup(
+                            KeyboardFactory.getCardsMessageInlineKeyboard(msg,cards));
+                    try {
+                        execute(msg);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
                 })
                 .build();
     }
@@ -148,11 +169,11 @@ public class CardBot extends AbilityBot {
     public Ability getCard(){
         return Ability
                 .builder()
-                .name("get")
+                .name("sdsds")
                 .info("Get a photo of card")
                 .input(0)
                 .locality(USER)
-                .privacy(Privacy.PUBLIC)
+                .privacy(PUBLIC)
                 .action(context -> {
 
                     //TODO MAKE METHOD

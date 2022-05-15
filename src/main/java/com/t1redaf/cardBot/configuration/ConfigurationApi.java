@@ -7,10 +7,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @org.springframework.context.annotation.Configuration
-public class Configuration {
+public class ConfigurationApi {
     private final CardBot cardBot;
 
-    public Configuration(CardBot cardBot) {
+    public ConfigurationApi(CardBot cardBot) {
         this.cardBot = cardBot;
     }
 

@@ -31,4 +31,8 @@ public class CardService {
     public List<Card> getAllCards(){
         return cardRepository.findAll();
     }
+
+    public List<Card> getCardsByChatId(Long chatId){
+        return cardRepository.findCardsByTelegramUser_ChatId(chatId);
+    }
 }
