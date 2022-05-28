@@ -25,12 +25,13 @@ public class KeyboardFactory {
         return replyKeyboard;
     }
 
-    public static ReplyKeyboard getCardsMessageInlineKeyboard(SendMessage msg, List<Card> cards) {
+    public static ReplyKeyboard getCardsMessageInlineKeyboard(List<Card> cards) {
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> keyboardButtons = new ArrayList<>();
             for (Card card : cards){
-                InlineKeyboardButton button = new InlineKeyboardButton(card.getName());
+                InlineKeyboardButton button = new InlineKeyboardButton();
+                button.setText(card.getName());
                 button.setCallbackData(card.getName());
                 keyboardButtons.add(button);
             }
