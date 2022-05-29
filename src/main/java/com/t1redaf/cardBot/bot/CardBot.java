@@ -22,6 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
 import javax.ws.rs.NotFoundException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -77,8 +78,9 @@ public class CardBot extends AbilityBot {
     */
     public ReplyFlow addCard() {
         Reply addCardReply = Reply.of((bot, update) ->{
-                    PhotoSize photo = update.getMessage().getPhoto().get(3);
-                    GetFile getFile = new GetFile(photo.getFileId());
+                    String fileId = update.getMessage().getPhoto().stream().max(Comparator.comparing(PhotoSize::getFileSize))
+                            .orElse(null).getFileId();
+                    GetFile getFile = new GetFile(fileId);
                     try {
                         File fileTg = execute(getFile);
 //                        String filePath = fileTg.getFilePath();
