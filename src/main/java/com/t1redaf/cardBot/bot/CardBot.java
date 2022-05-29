@@ -53,24 +53,7 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(ALL)
                 .privacy(PUBLIC)
-                .action(context -> telegramUserService.findByChatId(context.chatId()).ifPresentOrElse(telegramUser ->
-                        silent.send("Hi, dear %s\n\nI am very glad to see you again".formatted(context.user().getUserName()), context.chatId()), () -> {
-                    TelegramUser newUser = new TelegramUser();
-                    newUser.setChatId(context.chatId());
-                    telegramUserService.save(newUser);
-                    SendMessage message = new SendMessage(context.chatId().toString(),"""
-                            Hi, you are new in this bot
-                            This bot can store photo of cards and give it to you in one click
-                            Also users can make their cards 'public' to public usage
-                            Command '/help' can give you commands
-                            I hope you enjoy this bot!""");
-                    message.setReplyMarkup(KeyboardFactory.getStartKeyboard());
-                    try {
-                        execute(message);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                }))
+                .action(responseService::startCommand)
                 .build();
     }
 
@@ -85,16 +68,7 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(ctx -> silent.send("""
-                        ✨Available commands✨
-
-                        %s - start working with me
-                        %s - add card
-                        %s - get list of your cards
-                        %s - get help at work with me""".formatted(
-                                START.getCommandName(), ADD.getCommandName(),
-                        GET_CARDS.getCommandName(),HELP.getCommandName()),
-                        ctx.chatId()))
+                .action(responseService::helpCommand)
                 .build();
     }
 
@@ -148,25 +122,7 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(ALL)
                 .privacy(PUBLIC)
-                .action(context -> {
-                    List<Card> cards = cardService.getCardsByChatId(context.chatId());
-                    if (cards.isEmpty()) {
-                        silent.send("""
-                                You dont have any cards.
-                                Please add photo of card via command %s"""
-                                .formatted(ADD.getCommandName()),context.chatId());
-                        return;
-                    }
-
-                    SendMessage msg = new SendMessage(context.chatId().toString(), "Choose your card");
-                    msg.setReplyMarkup(
-                            KeyboardFactory.getCardsMessageInlineKeyboard(cards));
-                    try {
-                        execute(msg);
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                })
+                .action(responseService::getListOfCards)
                 .build();
     }
     /*
