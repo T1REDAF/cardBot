@@ -24,6 +24,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import javax.ws.rs.NotFoundException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -52,7 +53,7 @@ public class CardBot extends AbilityBot {
                 .name("start")
                 .info("User registration handling")
                 .input(0)
-                .locality(ALL)
+                .locality(USER)
                 .privacy(PUBLIC)
                 .action(responseService::startCommand)
                 .build();
@@ -78,8 +79,9 @@ public class CardBot extends AbilityBot {
     */
     public ReplyFlow addCard() {
         Reply addCardReply = Reply.of((bot, update) ->{
-                    String fileId = update.getMessage().getPhoto().stream().max(Comparator.comparing(PhotoSize::getFileSize))
-                            .orElse(null).getFileId();
+                    String fileId = Objects.requireNonNull(update.getMessage().getPhoto().
+                            stream().max(Comparator.comparing(PhotoSize::getFileSize))
+                            .orElse(null)).getFileId();
                     GetFile getFile = new GetFile(fileId);
                     try {
                         File fileTg = execute(getFile);
@@ -122,7 +124,7 @@ public class CardBot extends AbilityBot {
                 .name("cards")
                 .info("Get all of cards")
                 .input(0)
-                .locality(ALL)
+                .locality(USER)
                 .privacy(PUBLIC)
                 .action(responseService::getListOfCards)
                 .build();
@@ -132,19 +134,40 @@ public class CardBot extends AbilityBot {
     */
     public Reply replyToButtons() {
         BiConsumer<BaseAbilityBot,Update> action = responseService::replyToButtons;
-        return Reply.of(action, CALLBACK_QUERY);
+        return Reply.of(action, CALLBACK_QUERY,
+                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose your card"));
     }
 
     /*
-    ***Delete card
+    ***Get all cards to delete***
      */
-    //TODO MAKE DELETE CARD METHOD
-    public Predicate<Update> hasText(String msg){
-        return update -> update.getMessage().getText().split(" ")[0].equalsIgnoreCase(msg);
+    public Ability deleteCards(){
+        return Ability
+                .builder()
+                .name("delete")
+                .info("Delete card")
+                .input(0)
+                .locality(USER)
+                .privacy(PUBLIC)
+                .action(responseService::deleteCommand)
+                .build();
     }
 
-    protected CardBot(@Value("${bot.token}") String botToken, @Value("${bot.name}") String botName, TelegramUserService telegramUserService, CardService cardService, ResponseService responseService) {
-        //TODO ADD BOT TOKEN, BOT NAME TO ENVIRONMENT VARIABLES
+    public Reply replyToDeleteButtons(){
+        BiConsumer<BaseAbilityBot,Update> action = responseService::replyToDeleteButtons;
+        return Reply.of(action,CALLBACK_QUERY,
+                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose card to delete"));
+    }
+    public Predicate<Update> hasText(String msg){
+        return update -> update.getMessage().getText().toLowerCase().contains(msg);
+    }
+
+    protected CardBot(@Value("${bot.token}") String botToken,
+                      @Value("${bot.name}") String botName,
+                      TelegramUserService telegramUserService,
+                      CardService cardService,
+                      ResponseService responseService)
+    {
         super(botToken, botName);
         this.telegramUserService = telegramUserService;
         this.cardService = cardService;

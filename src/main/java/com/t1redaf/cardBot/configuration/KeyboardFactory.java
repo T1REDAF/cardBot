@@ -40,4 +40,19 @@ public class KeyboardFactory {
         inlineKeyboard.setKeyboard(rowsInline);
         return inlineKeyboard;
     }
+    public static ReplyKeyboard getCardsMessageInlineKeyboard(List<Card> cards, String dataAddition) {
+        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        List<InlineKeyboardButton> keyboardButtons = new ArrayList<>();
+        for (Card card : cards){
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(card.getName());
+            button.setCallbackData(dataAddition + card.getName());
+            keyboardButtons.add(button);
+        }
+
+        rowsInline.add(keyboardButtons);
+        inlineKeyboard.setKeyboard(rowsInline);
+        return inlineKeyboard;
+    }
 }

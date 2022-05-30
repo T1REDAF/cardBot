@@ -85,9 +85,11 @@ public class ResponseService {
 
                 %s - start working with me
                 %s - add card
+                %s - delete card
                 %s - get list of your cards
                 %s - get help at work with me""".formatted(
                 START.getCommandName(), ADD.getCommandName(),
+                DELETE.getCommandName(),
                 GET_CARDS.getCommandName(),HELP.getCommandName()),
                 context.chatId());
     }
@@ -114,5 +116,27 @@ public class ResponseService {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void deleteCommand(MessageContext context) {
+        List<Card> cards = cardService.getCardsByChatId(context.chatId());
+        if (cards.isEmpty())
+            context.bot().silent().send("You dont have any cards in your collection",context.chatId());
+        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose card to delete");
+        msg.setReplyMarkup(
+                KeyboardFactory.getCardsMessageInlineKeyboard(cards));
+        try {
+            context.bot().execute(msg);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void replyToDeleteButtons(BaseAbilityBot bot, Update upd) {
+        String nameCardToDelete = upd.getCallbackQuery().getData();
+        Card cardToDelete = cardService.getCardsByChatId(getChatId(upd)).stream()
+                .filter(card -> card.getName().equals(nameCardToDelete)).findAny().get();
+        cardService.deleteCardByFileId(cardToDelete.getFileId());
+        bot.silent().send("'%s' card has been successfully deleted".formatted(cardToDelete.getName()),getChatId(upd));
     }
 }

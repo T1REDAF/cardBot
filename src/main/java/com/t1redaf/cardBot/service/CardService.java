@@ -24,7 +24,7 @@ public class CardService {
         return cardRepository.findById(id);
     }
 
-    public void deleteCardById(String id){
+    public void deleteCardByFileId(String id){
          cardRepository.deleteById(id);
     }
 
