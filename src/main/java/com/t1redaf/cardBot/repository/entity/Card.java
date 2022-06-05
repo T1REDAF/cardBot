@@ -17,6 +17,9 @@ public class Card {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "open")
+    private String open;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_chat_id")
     private  TelegramUser telegramUser;

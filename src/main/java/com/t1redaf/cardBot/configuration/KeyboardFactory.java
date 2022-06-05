@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
@@ -18,41 +19,25 @@ public class KeyboardFactory {
     public static ReplyKeyboard getStartKeyboard(){
         ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
-        KeyboardRow row1 = new KeyboardRow();
-        row1.addAll(new ArrayList<>(Arrays.asList("/start","/help","/add","/get")));
-        keyboardRows.add(row1);
+        //KeyboardRow row1 = new KeyboardRow();
+        Arrays.stream(CommandName.values()).forEach((command -> keyboardRows.add(new KeyboardRow(Collections.singleton(new KeyboardButton(command.getCommandName()))))));
+        //row1.addAll(new ArrayList<>(Arrays.asList("/start","/help","/add","/get")));
+        //keyboardRows.add(row1);
         replyKeyboard.setKeyboard(keyboardRows);
         return replyKeyboard;
     }
 
     public static ReplyKeyboard getCardsMessageInlineKeyboard(List<Card> cards) {
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        List<InlineKeyboardButton> keyboardButtons = new ArrayList<>();
-            for (Card card : cards){
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+            cards.forEach(card -> {
                 InlineKeyboardButton button = new InlineKeyboardButton();
                 button.setText(card.getName());
                 button.setCallbackData(card.getName());
-                keyboardButtons.add(button);
-            }
-
-        rowsInline.add(keyboardButtons);
-        inlineKeyboard.setKeyboard(rowsInline);
+                rows.add(new ArrayList<>(Collections.singleton(button)));
+            });
+        inlineKeyboard.setKeyboard(rows);
         return inlineKeyboard;
     }
-    public static ReplyKeyboard getCardsMessageInlineKeyboard(List<Card> cards, String dataAddition) {
-        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        List<InlineKeyboardButton> keyboardButtons = new ArrayList<>();
-        for (Card card : cards){
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(card.getName());
-            button.setCallbackData(dataAddition + card.getName());
-            keyboardButtons.add(button);
-        }
 
-        rowsInline.add(keyboardButtons);
-        inlineKeyboard.setKeyboard(rowsInline);
-        return inlineKeyboard;
-    }
 }

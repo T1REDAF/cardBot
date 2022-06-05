@@ -87,10 +87,11 @@ public class ResponseService {
                 %s - add card
                 %s - delete card
                 %s - get list of your cards
+                %s - make your card public
                 %s - get help at work with me""".formatted(
-                START.getCommandName(), ADD.getCommandName(),
-                DELETE.getCommandName(),
-                GET_CARDS.getCommandName(),HELP.getCommandName()),
+                    START.getCommandName(), ADD.getCommandName(),
+                    DELETE.getCommandName(), GET_CARDS.getCommandName(),
+                    PUBLIC.getCommandName(),HELP.getCommandName()),
                 context.chatId());
     }
 /*

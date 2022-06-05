@@ -152,12 +152,17 @@ public class CardBot extends AbilityBot {
                 .action(responseService::deleteCommand)
                 .build();
     }
-
+    /*
+    ***Handling delete query***
+     */
     public Reply replyToDeleteButtons(){
         BiConsumer<BaseAbilityBot,Update> action = responseService::replyToDeleteButtons;
         return Reply.of(action,CALLBACK_QUERY,
                 (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose card to delete"));
     }
+    /*
+    ***Public method
+     */
     public Predicate<Update> hasText(String msg){
         return update -> update.getMessage().getText().toLowerCase().contains(msg);
     }
@@ -183,7 +188,6 @@ public class CardBot extends AbilityBot {
     public String getBotToken() {
         return super.getBotToken();
     }
-
 
 }
 

@@ -1,0 +1,1 @@
+ALTER TABLE card ALTER open SET DEFAULT false;
