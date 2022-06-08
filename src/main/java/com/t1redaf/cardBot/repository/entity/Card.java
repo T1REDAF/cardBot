@@ -18,7 +18,7 @@ public class Card {
     private String name;
 
     @Column(name = "open")
-    private String open;
+    private Boolean open;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_chat_id")

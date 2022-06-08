@@ -96,6 +96,7 @@ public class CardBot extends AbilityBot {
                         newCard.setFileId(fileTg.getFileId());
                         newCard.setTelegramUser(user);
                         newCard.setName(update.getMessage().getCaption());
+                        newCard.setOpen(false);
                         user.addCard(newCard);
                         cardService.save(newCard);
                         silent.send("Card successfully have added to your collection\n\nThank you for using me:)",
@@ -107,7 +108,7 @@ public class CardBot extends AbilityBot {
             , PHOTO, CAPTION);
         return ReplyFlow.builder(db)
                 .action((bot,update) ->
-                        silent.send("Please attach a photo of card and his name in one message(necessarily)",
+                        silent.send("Please attach a photo of card and its name in one message(caption)",
                                 update.getMessage().getChatId()))
                 .onlyIf(hasText(ADD.getCommandName()))
                 .next(addCardReply)
@@ -135,7 +136,7 @@ public class CardBot extends AbilityBot {
     public Reply replyToButtons() {
         BiConsumer<BaseAbilityBot,Update> action = responseService::replyToButtons;
         return Reply.of(action, CALLBACK_QUERY,
-                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose your card"));
+                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose card"));
     }
 
     /*
@@ -163,6 +164,17 @@ public class CardBot extends AbilityBot {
     /*
     ***Public method
      */
+    public Ability publicCommand(){
+        return Ability
+                .builder()
+                .name("public")
+                .info("Get public cards")
+                .input(0)
+                .locality(USER)
+                .privacy(PUBLIC)
+                .action(responseService::publicCommand)
+                .build();
+    }
     public Predicate<Update> hasText(String msg){
         return update -> update.getMessage().getText().toLowerCase().contains(msg);
     }

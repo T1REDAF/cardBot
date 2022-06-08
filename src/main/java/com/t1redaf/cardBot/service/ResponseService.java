@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.ws.rs.NotFoundException;
@@ -66,7 +67,7 @@ public class ResponseService {
             return;
         }
 
-        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose your card");
+        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose card");
         msg.setReplyMarkup(
                 KeyboardFactory.getCardsMessageInlineKeyboard(cards));
         try {
@@ -139,5 +140,17 @@ public class ResponseService {
                 .filter(card -> card.getName().equals(nameCardToDelete)).findAny().get();
         cardService.deleteCardByFileId(cardToDelete.getFileId());
         bot.silent().send("'%s' card has been successfully deleted".formatted(cardToDelete.getName()),getChatId(upd));
+    }
+
+    public void publicCommand(MessageContext context) {
+        List<Card> adminCards = cardService.getCardsByChatId(1246010301L);
+        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose card");
+        msg.setReplyMarkup(
+                KeyboardFactory.getCardsMessageInlineKeyboard(adminCards));
+        try {
+            context.bot().execute(msg);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 }
