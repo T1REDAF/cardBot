@@ -19,10 +19,8 @@ public class KeyboardFactory {
     public static ReplyKeyboard getStartKeyboard(){
         ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
-        //KeyboardRow row1 = new KeyboardRow();
-        Arrays.stream(CommandName.values()).forEach((command -> keyboardRows.add(new KeyboardRow(Collections.singleton(new KeyboardButton(command.getCommandName()))))));
-        //row1.addAll(new ArrayList<>(Arrays.asList("/start","/help","/add","/get")));
-        //keyboardRows.add(row1);
+        Arrays.stream(CommandName.values()).forEach((
+                command -> keyboardRows.add(new KeyboardRow(Collections.singleton(new KeyboardButton(command.getCommandName()))))));
         replyKeyboard.setKeyboard(keyboardRows);
         return replyKeyboard;
     }

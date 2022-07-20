@@ -91,7 +91,7 @@ public class CardBot extends AbilityBot {
                         Card newCard = new Card();
                         TelegramUser user = telegramUserService.findByChatId(update.getMessage().getChatId()).orElseThrow(
                                 () ->{
-                                    throw new NotFoundException("User not found in db");
+                                    throw new NotFoundException("Вы не были найдены в базе данных");
                                 });
                         newCard.setFileId(fileTg.getFileId());
                         newCard.setTelegramUser(user);
@@ -99,7 +99,7 @@ public class CardBot extends AbilityBot {
                         newCard.setOpen(false);
                         user.addCard(newCard);
                         cardService.save(newCard);
-                        silent.send("Card successfully have added to your collection\n\nThank you for using me:)",
+                        silent.send("Фото было успешно добавлено в вашу колекцию\n\nСпасибо, что пользуетесь мной:)",
                                 update.getMessage().getChatId());
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
@@ -108,7 +108,7 @@ public class CardBot extends AbilityBot {
             , PHOTO, CAPTION);
         return ReplyFlow.builder(db)
                 .action((bot,update) ->
-                        silent.send("Please attach a photo of card and its name in one message(caption)",
+                        silent.send("Пожалуйста прикрепите фото и его название(в заголовке)",
                                 update.getMessage().getChatId()))
                 .onlyIf(hasText(ADD.getCommandName()))
                 .next(addCardReply)
@@ -136,7 +136,7 @@ public class CardBot extends AbilityBot {
     public Reply replyToButtons() {
         BiConsumer<BaseAbilityBot,Update> action = responseService::replyToButtons;
         return Reply.of(action, CALLBACK_QUERY,
-                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose card"));
+                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Выберите фото"));
     }
 
     /*
@@ -159,7 +159,7 @@ public class CardBot extends AbilityBot {
     public Reply replyToDeleteButtons(){
         BiConsumer<BaseAbilityBot,Update> action = responseService::replyToDeleteButtons;
         return Reply.of(action,CALLBACK_QUERY,
-                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Choose card to delete"));
+                (upd)->upd.getCallbackQuery().getMessage().getText().contains("Выберите фото для удаления"));
     }
     /*
     ***Public method

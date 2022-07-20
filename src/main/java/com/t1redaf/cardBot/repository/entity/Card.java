@@ -1,13 +1,15 @@
 package com.t1redaf.cardBot.repository.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "card")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @EqualsAndHashCode(exclude = "telegramUser")
 public class Card {
     @Id

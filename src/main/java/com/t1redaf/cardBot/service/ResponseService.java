@@ -41,11 +41,9 @@ public class ResponseService {
         String cardName = upd.getCallbackQuery().getData();
         Card card = cardService.getCardsByChatId(getChatId(upd))
                 .stream().filter(s -> s.getName().trim().equals(cardName.trim())).findAny().orElseThrow(() -> {
-                    throw new NotFoundException("Dont found your card\nSomething have gone wrong");
+                    throw new NotFoundException("Ваше фото было не найдено\nЧто-то пошло не так D:");
                 });
-//        GetFile getFile = new GetFile(card.getFileId());
         try {
-//            File telegramFile = bot.execute(getFile);
             SendPhoto sendPhoto = new SendPhoto();
             sendPhoto.setChatId(getChatId(upd).toString());
             sendPhoto.setPhoto(new InputFile(card.getFileId()));
@@ -61,13 +59,13 @@ public class ResponseService {
         List<Card> cards = cardService.getCardsByChatId(context.chatId());
         if (cards.isEmpty()) {
             context.bot().silent().send("""
-                            You dont have any cards.
-                            Please add photo of card via command %s"""
+                            У вас нет ни одного фото.
+                            Вы можете добавить его с помощью команды - %s"""
                     .formatted(ADD.getCommandName()),context.chatId());
             return;
         }
 
-        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose card");
+        SendMessage msg = new SendMessage(context.chatId().toString(), "Выберите фото");
         msg.setReplyMarkup(
                 KeyboardFactory.getCardsMessageInlineKeyboard(cards));
         try {
@@ -82,17 +80,17 @@ public class ResponseService {
  */
     public void helpCommand(MessageContext context) {
         context.bot().silent().send("""
-                ✨Available commands✨
+                ✨Доступные команды✨
 
-                %s - start working with me
-                %s - add card
-                %s - delete card
-                %s - get list of your cards
-                %s - make your card public
-                %s - get help at work with me""".formatted(
+                %s - начать работать со мной
+                %s - добавить фото
+                %s - удалить фото
+                %s - карты для общего использования
+                %s - найти все ваши фото
+                %s - помощь со мной""".formatted(
                     START.getCommandName(), ADD.getCommandName(),
-                    DELETE.getCommandName(), GET_CARDS.getCommandName(),
-                    PUBLIC.getCommandName(),HELP.getCommandName()),
+                    DELETE.getCommandName(),PUBLIC.getCommandName(),
+                    GET_CARDS.getCommandName(), HELP.getCommandName()),
                 context.chatId());
     }
 /*
@@ -100,20 +98,19 @@ public class ResponseService {
  */
     public void startCommand(MessageContext context) {
         telegramUserService.findByChatId(context.chatId()).ifPresentOrElse(telegramUser ->
-                context.bot().silent().send("Hi, dear %s\n\nI am very glad to see you again".formatted(context.user().getUserName()), context.chatId()),
+                context.bot().silent().send("Привет, дорогой %s\n\nЯ очень рад, что ты захотел поиграть со мной".formatted(context.user().getUserName()), context.chatId()),
                 () -> {
             TelegramUser newUser = new TelegramUser();
             newUser.setChatId(context.chatId());
             telegramUserService.save(newUser);
-            SendMessage message = new SendMessage(context.chatId().toString(),"""
-                            Hi, you are new in this bot
-                            This bot can store photo of cards and give it to you in one click
-                            Also users can make their cards 'public' to public usage
-                            Command '/help' can give you commands
-                            I hope you enjoy this bot!""");
-            message.setReplyMarkup(KeyboardFactory.getStartKeyboard());
-            try {
-                context.bot().execute(message);
+                    SendMessage message = new SendMessage(context.chatId().toString(),"""
+                            Привет, новенький
+                            Я существую ради хранения фотографий
+                            Выбери команду %s чтобы понять какие команды я понимаю
+                            """.formatted(HELP.getCommandName()));
+                    message.setReplyMarkup(KeyboardFactory.getStartKeyboard());
+                    try {
+                        context.bot().execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
@@ -123,8 +120,11 @@ public class ResponseService {
     public void deleteCommand(MessageContext context) {
         List<Card> cards = cardService.getCardsByChatId(context.chatId());
         if (cards.isEmpty())
-            context.bot().silent().send("You dont have any cards in your collection",context.chatId());
-        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose card to delete");
+            context.bot().silent().send("""
+                            У вас нет ни одного фото.
+                            Вы можете добавить его с помощью команды - %s"""
+                    .formatted(ADD.getCommandName()),context.chatId());
+        SendMessage msg = new SendMessage(context.chatId().toString(), "Выберите фото для удаления");
         msg.setReplyMarkup(
                 KeyboardFactory.getCardsMessageInlineKeyboard(cards));
         try {
@@ -139,12 +139,12 @@ public class ResponseService {
         Card cardToDelete = cardService.getCardsByChatId(getChatId(upd)).stream()
                 .filter(card -> card.getName().equals(nameCardToDelete)).findAny().get();
         cardService.deleteCardByFileId(cardToDelete.getFileId());
-        bot.silent().send("'%s' card has been successfully deleted".formatted(cardToDelete.getName()),getChatId(upd));
+        bot.silent().send("'%s' карта была успешна добавлена!".formatted(cardToDelete.getName()),getChatId(upd));
     }
 
     public void publicCommand(MessageContext context) {
         List<Card> adminCards = cardService.getCardsByChatId(1246010301L);
-        SendMessage msg = new SendMessage(context.chatId().toString(), "Choose card");
+        SendMessage msg = new SendMessage(context.chatId().toString(), "Выберите фото");
         msg.setReplyMarkup(
                 KeyboardFactory.getCardsMessageInlineKeyboard(adminCards));
         try {
