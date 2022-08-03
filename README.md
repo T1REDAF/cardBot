@@ -1,9 +1,5 @@
 <div id="top"></div>
 
-
-[![Contributors][contributors-shield]][contributors-url]
-[![Spring][spring-shield]][contributors-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -63,14 +59,11 @@
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+*[![Spring][spring-shield]]
+*[![MySQL][mysql-shield]]
+*[![HibernateORM][hibernate-shield]]
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -131,6 +124,6 @@ Project Link: [https://github.com/T1REDAF/cardBot](https://github.com/T1REDAF/ca
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [spring-shield]: https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[mysql-shield]: https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white
+[hibernate-shield]: https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white
 
