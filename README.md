@@ -59,9 +59,10 @@
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://github.com/T1REDAF/cardBot/blob/Make_foundation/src/main/resources/images/bot%20view.jpg)
-
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
-
+<a href="https://github.com/T1REDAF/cardBot">
+    <img src="src/main/resources/images/bot%20view.jpg" alt="Logo">
+  </a>
+  
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
