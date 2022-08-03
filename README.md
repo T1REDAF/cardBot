@@ -59,9 +59,9 @@
 
 ### Built With
 
-*[![Spring][spring-shield]]
-*[![MySQL][mysql-shield]]
-*[![HibernateORM][hibernate-shield]]
+![Spring][spring-shield]
+![MySQL][mysql-shield]
+![HibernateORM][hibernate-shield]
 
 
 
