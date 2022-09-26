@@ -48,7 +48,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot]](https://github.com/T1REDAF/cardBot/blob/Make_foundation/src/main/resources/images/bot%20view.jpg)
+(https://github.com/T1REDAF/cardBot/blob/Make_foundation/src/main/resources/images/bot%20view.jpg)
 <a href="https://github.com/T1REDAF/cardBot">
     <img src="src/main/resources/images/bot%20view.jpg" alt="Logo">
   </a>
