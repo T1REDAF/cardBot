@@ -101,9 +101,9 @@ Don't forget to give the project a star! Thanks again!
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@vk_handle](https://vk.com/dinwhy) - monkeydeluffy@list.ru
+monkeydeluffy@list.ru
 
-Project Link: [https://github.com/T1REDAF/cardBot](https://github.com/T1REDAF/cardBot)
+[https://github.com/T1REDAF/cardBot](https://github.com/T1REDAF/cardBot)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
