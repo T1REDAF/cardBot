@@ -2,11 +2,10 @@ package com.t1redaf.cardBot.service;
 
 import com.t1redaf.cardBot.repository.CardRepository;
 import com.t1redaf.cardBot.repository.entity.Card;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 @Service
 public class CardService {
 
@@ -20,16 +19,8 @@ public class CardService {
         cardRepository.save(card);
     }
 
-    public Optional<Card> getCardById(String id){
-        return cardRepository.findById(id);
-    }
-
     public void deleteCardByFileId(String id){
          cardRepository.deleteById(id);
-    }
-
-    public List<Card> getAllCards(){
-        return cardRepository.findAll();
     }
 
     public List<Card> getCardsByChatId(Long chatId){

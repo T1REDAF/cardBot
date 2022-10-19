@@ -1,40 +1,33 @@
 package com.t1redaf.cardBot.bot;
 
-import com.t1redaf.cardBot.configuration.KeyboardFactory;
 import com.t1redaf.cardBot.repository.entity.Card;
 import com.t1redaf.cardBot.repository.entity.TelegramUser;
 import com.t1redaf.cardBot.service.CardService;
-import com.t1redaf.cardBot.service.ResponseService;
+import com.t1redaf.cardBot.service.ResponseHandler;
 import com.t1redaf.cardBot.service.TelegramUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.bot.BaseAbilityBot;
-import org.telegram.abilitybots.api.objects.*;
-import org.telegram.abilitybots.api.util.AbilityUtils;
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.abilitybots.api.objects.Ability;
+import org.telegram.abilitybots.api.objects.Reply;
+import org.telegram.abilitybots.api.objects.ReplyFlow;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-
 import javax.ws.rs.NotFoundException;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static com.t1redaf.cardBot.configuration.CommandName.*;
+import static com.t1redaf.cardBot.configuration.CommandName.ADD;
 import static org.telegram.abilitybots.api.objects.Flag.*;
-import static org.telegram.abilitybots.api.objects.Locality.ALL;
 import static org.telegram.abilitybots.api.objects.Locality.USER;
 import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
-import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Component
 public class CardBot extends AbilityBot {
@@ -42,7 +35,7 @@ public class CardBot extends AbilityBot {
 
     private final TelegramUserService telegramUserService;
     private final CardService cardService;
-    private final ResponseService responseService;
+    private final ResponseHandler responseHandler;
 
     /*
     ***Start command***
@@ -55,7 +48,7 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(responseService::startCommand)
+                .action(responseHandler::startCommand)
                 .build();
     }
 
@@ -70,7 +63,7 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(responseService::helpCommand)
+                .action(responseHandler::helpCommand)
                 .build();
     }
 
@@ -85,9 +78,6 @@ public class CardBot extends AbilityBot {
                     GetFile getFile = new GetFile(fileId);
                     try {
                         File fileTg = execute(getFile);
-//                        String filePath = fileTg.getFilePath();
-//                        java.io.File file = downloadFile(filePath,
-//                                new java.io.File("src/main/resources/user cards/"+photo.getFileId()+".jpg"));
                         Card newCard = new Card();
                         TelegramUser user = telegramUserService.findByChatId(update.getMessage().getChatId()).orElseThrow(
                                 () ->{
@@ -127,14 +117,14 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(responseService::getListOfCards)
+                .action(responseHandler::getListOfCards)
                 .build();
     }
     /*
     ***Get card***
     */
     public Reply replyToButtons() {
-        BiConsumer<BaseAbilityBot,Update> action = responseService::replyToButtons;
+        BiConsumer<BaseAbilityBot,Update> action = responseHandler::replyToButtons;
         return Reply.of(action, CALLBACK_QUERY,
                 (upd)->upd.getCallbackQuery().getMessage().getText().contains("Выберите фото"));
     }
@@ -150,14 +140,14 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(responseService::deleteCommand)
+                .action(responseHandler::deleteCommand)
                 .build();
     }
     /*
     ***Handling delete query***
      */
     public Reply replyToDeleteButtons(){
-        BiConsumer<BaseAbilityBot,Update> action = responseService::replyToDeleteButtons;
+        BiConsumer<BaseAbilityBot,Update> action = responseHandler::replyToDeleteButtons;
         return Reply.of(action,CALLBACK_QUERY,
                 (upd)->upd.getCallbackQuery().getMessage().getText().contains("Выберите фото для удаления"));
     }
@@ -172,7 +162,7 @@ public class CardBot extends AbilityBot {
                 .input(0)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(responseService::publicCommand)
+                .action(responseHandler::publicCommand)
                 .build();
     }
     public Predicate<Update> hasText(String msg){
@@ -183,12 +173,12 @@ public class CardBot extends AbilityBot {
                       @Value("${bot.name}") String botName,
                       TelegramUserService telegramUserService,
                       CardService cardService,
-                      ResponseService responseService)
+                      ResponseHandler responseHandler)
     {
         super(botToken, botName);
         this.telegramUserService = telegramUserService;
         this.cardService = cardService;
-        this.responseService = responseService;
+        this.responseHandler = responseHandler;
     }
 
     @Override

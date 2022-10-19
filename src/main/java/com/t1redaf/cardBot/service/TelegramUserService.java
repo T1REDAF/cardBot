@@ -11,6 +11,7 @@ import java.util.Optional;
 public class TelegramUserService {
 
     private final TelegramUserRepository telegramUserRepository;
+
     @Autowired
     public  TelegramUserService(TelegramUserRepository telegramUserRepository){
         this.telegramUserRepository = telegramUserRepository;

@@ -1,7 +1,6 @@
 package com.t1redaf.cardBot.configuration;
 
 import com.t1redaf.cardBot.repository.entity.Card;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -19,9 +18,23 @@ public class KeyboardFactory {
     public static ReplyKeyboard getStartKeyboard(){
         ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRows = new ArrayList<>();
-        Arrays.stream(CommandName.values()).forEach((
-                command -> keyboardRows.add(new KeyboardRow(Collections.singleton(new KeyboardButton(command.getCommandName()))))));
+        CommandName[] commandEnumArray = CommandName.values();
+        if (commandEnumArray.length % 2 == 0){
+            for (int i = 0; i < commandEnumArray.length; i+=2){
+                keyboardRows.add(new KeyboardRow(List.of(
+                        new KeyboardButton(commandEnumArray[i].getCommandName()),
+                        new KeyboardButton(commandEnumArray[i+1].getCommandName())))
+                );
+            }
+        }else{
+            Arrays.stream(commandEnumArray).forEach((
+                    command -> keyboardRows.add(new KeyboardRow(Collections.singleton(new KeyboardButton(command.getCommandName()))))));
+        }
+
         replyKeyboard.setKeyboard(keyboardRows);
+        replyKeyboard.setSelective(true);
+        replyKeyboard.setResizeKeyboard(true);
+        replyKeyboard.setOneTimeKeyboard(false);
         return replyKeyboard;
     }
 
